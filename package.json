@@ -22,7 +22,7 @@
   "exports": {
     ".": "./lib/index.js",
     "./DefaultTheme": "./lib/DefaultTheme.js",
-    "./styles.css": "./assets/styles.css"
+    "./DefaultTheme.css": "./assets/DefaultTheme.css"
   },
   "main": "lib/index.js",
   "author": "Vinorcola",
