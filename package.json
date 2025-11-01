@@ -1,0 +1,53 @@
+{
+  "name": "@vinorcola/dynamic-table",
+  "version": "1.0.0",
+  "description": "A table to ease the display of a filterable, sortable and paginable dataset.",
+  "keywords": [
+    "table",
+    "list",
+    "filter",
+    "sort",
+    "paginate",
+    "pagination"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vinorcola/dynamic-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Vinorcola/dynamic-table/issues"
+  },
+  "homepage": "https://github.com/Vinorcola/dynamic-table#readme",
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js",
+    "./DefaultTheme": "./lib/DefaultTheme.js",
+    "./styles.css": "./assets/styles.css"
+  },
+  "main": "lib/index.js",
+  "author": "Vinorcola",
+  "private": false,
+  "license": "MIT",
+  "files": [
+    "assets/**/*",
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --fix",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "git add -A .",
+    "postversion": "git push && git push --tags"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@vinorcola/lint": "^1.0.5",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@vinorcola/utils": "^1.0.1",
+    "react": "^19.0.0"
+  }
+}

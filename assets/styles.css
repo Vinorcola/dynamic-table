@@ -1,0 +1,6 @@
+@theme {
+    --color-table-header: var(--color-stone-300);
+    --color-table-line-even: color-mix(in oklab, var(--color-stone-300), transparent 70%);
+    --color-table-line-odd: color-mix(in oklab, var(--color-stone-100), transparent 70%);
+    --color-table-line-hover: color-mix(in oklab, var(--color-stone-500), transparent 50%);
+}
