@@ -37,12 +37,12 @@ import useSortState, { type SortState } from "./useSortState.js"
 export type Primitive = boolean | Date | number | string
 export type BaseItem = Record<string, any> & { readonly id: ReactKey }
 export type ItemKey<Item extends BaseItem> = Extract<keyof Item, string>
-export type { ColumnDefinition, ValueResolver } from "./ColumnDefinition"
-export { default as Dictionary } from "./Dictionary"
-export type { FilterState } from "./useFilterState"
-export type { SortDirection, SortState } from "./useSortState"
-export type { ColumnsMaskState } from "./useMaskableColumns"
-export type { PaginationState } from "./usePagination"
+export type { ColumnDefinition, ValueResolver } from "./ColumnDefinition.js"
+export { default as Dictionary } from "./Dictionary.js"
+export type { FilterState } from "./useFilterState.js"
+export type { SortDirection, SortState } from "./useSortState.js"
+export type { ColumnsMaskState } from "./useMaskableColumns.js"
+export type { PaginationState } from "./usePagination.js"
 
 interface Props<Item extends BaseItem> {
     items: Item[]
