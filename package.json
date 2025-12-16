@@ -1,6 +1,6 @@
 {
   "name": "@vinorcola/dynamic-table",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A table to ease the display of a filterable, sortable and paginable dataset.",
   "keywords": [
     "table",
