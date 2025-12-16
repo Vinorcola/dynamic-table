@@ -2,9 +2,9 @@ import { displayInteger } from "@vinorcola/utils/number"
 import { extractSearchableText } from "@vinorcola/utils/text"
 import { useMemo, type Key, type ReactNode } from "react"
 
-import type { InternalColumn, InternalColumns } from "./useColumns"
-import type { SortableValue } from "./useSortState"
-import type { BaseItem, Dictionary, Primitive } from "."
+import type { BaseItem, Dictionary, Primitive } from "./index.js"
+import type { InternalColumn, InternalColumns } from "./useColumns.js"
+import type { SortableValue } from "./useSortState.js"
 
 /**
  * A value that is loading (waiting for an async column dictionary to be available).

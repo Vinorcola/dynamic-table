@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 
-import type { InternalItems } from "./useItems"
-import type { BaseItem } from "."
+import type { BaseItem } from "./index.js"
+import type { InternalItems } from "./useItems.js"
 
 /**
  * A complete pagination state.

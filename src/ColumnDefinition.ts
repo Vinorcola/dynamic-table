@@ -1,4 +1,4 @@
-import type { BaseItem, Dictionary, ItemKey, Primitive } from "."
+import type { BaseItem, Dictionary, ItemKey, Primitive } from "./index.js"
 
 export type ValueResolver<Item extends BaseItem, Value extends Primitive> = (item: Item) => Value | null
 

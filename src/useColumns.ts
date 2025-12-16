@@ -1,8 +1,8 @@
 import { replaceElement } from "@vinorcola/utils/list"
 import { useEffect, useRef, useState } from "react"
 
-import { isAccessorColumnDefinition } from "./ColumnDefinition"
-import type { BaseItem, ColumnDefinition, Dictionary, Primitive, ValueResolver } from "."
+import { isAccessorColumnDefinition } from "./ColumnDefinition.js"
+import type { BaseItem, ColumnDefinition, Dictionary, Primitive, ValueResolver } from "./index.js"
 
 /**
  * A column that is loading a dictionary.

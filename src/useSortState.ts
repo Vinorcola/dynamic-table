@@ -1,9 +1,9 @@
 import { dropElement, replaceElement } from "@vinorcola/utils/list"
 import { useCallback, useMemo, useState } from "react"
 
-import type { InternalColumn, InternalColumns } from "./useColumns"
-import type { InternalItems, InternalItem } from "./useItems"
-import type { BaseItem, Primitive } from "."
+import type { BaseItem, Primitive } from "./index.js"
+import type { InternalColumn, InternalColumns } from "./useColumns.js"
+import type { InternalItems, InternalItem } from "./useItems.js"
 
 /**
  * A sort direction.

@@ -14,14 +14,14 @@ import {
     SearchIcon,
     SortIcon,
     UncheckedIcon,
-} from "./Icon"
-import { usePopup } from "./UniquePopupProvider"
-import type { InternalColumn, InternalColumns } from "./useColumns"
-import { isSearchable, isSelectable, type FilterType } from "./useFilterState"
-import { isMaskable } from "./useMaskableColumns"
-import { isSortable, type InternalSortableColumn } from "./useSortState"
-import type { BaseItem, Dictionary, Primitive } from "."
-import DynamicTable from "."
+} from "./Icon.js"
+import { usePopup } from "./UniquePopupProvider.js"
+import type { BaseItem, Dictionary, Primitive } from "./index.js"
+import DynamicTable from "./index.js"
+import type { InternalColumn, InternalColumns } from "./useColumns.js"
+import { isSearchable, isSelectable, type FilterType } from "./useFilterState.js"
+import { isMaskable } from "./useMaskableColumns.js"
+import { isSortable, type InternalSortableColumn } from "./useSortState.js"
 
 export interface Props {
     children?: ReactNode

@@ -2,9 +2,9 @@ import { drop } from "@vinorcola/utils/object"
 import { extractSearchableText } from "@vinorcola/utils/text"
 import { useCallback, useMemo, useState } from "react"
 
-import type { InternalColumn, InternalColumns } from "./useColumns"
-import type { InternalItems, LoadedInternalValue } from "./useItems"
-import type { BaseItem, Primitive } from "."
+import type { BaseItem, Primitive } from "./index.js"
+import type { InternalColumn, InternalColumns } from "./useColumns.js"
+import type { InternalItems, LoadedInternalValue } from "./useItems.js"
 
 /**
  * A filter type.

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import type { Primitive } from "."
+import type { Primitive } from "./index.ts"
 
 export interface DictionaryEntry {
     title: string

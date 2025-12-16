@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react"
 
-import type { InternalColumn } from "./useColumns"
-import type { InternalItems } from "./useItems"
-import type { BaseItem, Primitive } from "."
+import type { BaseItem, Primitive } from "./index.js"
+import type { InternalColumn } from "./useColumns.js"
+import type { InternalItems } from "./useItems.js"
 
 /**
  * A complete columns mask state.

@@ -1,6 +1,6 @@
 import type { Key as ReactKey } from "react"
 
-import type { ColumnDefinition } from "./ColumnDefinition"
+import type { ColumnDefinition } from "./ColumnDefinition.js"
 import {
     BodyContainer,
     Button,
@@ -24,15 +24,15 @@ import {
     SelectionFilterPopup,
     Table,
     TableContainer,
-} from "./DefaultTheme"
-import UniquePopupProvider from "./UniquePopupProvider"
-import useColumns from "./useColumns"
-import useFilterState, { type FilterState } from "./useFilterState"
-import useItems from "./useItems"
-import type { ColumnsMaskState } from "./useMaskableColumns"
-import useMaskableColumns from "./useMaskableColumns"
-import usePagination, { type PaginationState } from "./usePagination"
-import useSortState, { type SortState } from "./useSortState"
+} from "./DefaultTheme.js"
+import UniquePopupProvider from "./UniquePopupProvider.js"
+import useColumns from "./useColumns.js"
+import useFilterState, { type FilterState } from "./useFilterState.js"
+import useItems from "./useItems.js"
+import type { ColumnsMaskState } from "./useMaskableColumns.js"
+import useMaskableColumns from "./useMaskableColumns.js"
+import usePagination, { type PaginationState } from "./usePagination.js"
+import useSortState, { type SortState } from "./useSortState.js"
 
 export type Primitive = boolean | Date | number | string
 export type BaseItem = Record<string, any> & { readonly id: ReactKey }
