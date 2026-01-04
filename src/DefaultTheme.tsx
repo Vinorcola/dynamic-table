@@ -198,7 +198,7 @@ export function SelectionHeader(props: SelectionHeaderProps) {
     return (
         <th className="relative">
             {props.totalSelected}
-            <span className="text-sm text-stone-500 italic">
+            <span className="block text-xs text-stone-400 italic">
                 ({props.unvisibleSelected} caché{props.unvisibleSelected > 1 ? "s" : ""})
             </span>
         </th>
@@ -404,6 +404,7 @@ interface SelectionCellProps extends Props {
 export function SelectionCell(props: SelectionCellProps) {
     return (
         <td
+            className="cursor-pointer"
             onClick={(event) => {
                 event.preventDefault()
                 event.stopPropagation()
