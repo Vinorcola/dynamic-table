@@ -10,13 +10,13 @@ interface SelectableOptions<Item extends BaseItem> {
 }
 
 interface NonSelectableOptions {
-    selectedItems: never
-    onSelectionChange: never
+    selectedItems?: never
+    onSelectionChange?: never
 }
 
 export type SelectionOptions<Item extends BaseItem> = SelectableOptions<Item> | NonSelectableOptions
 
-function inSelectionMode<Item extends BaseItem>(props: SelectableOptions<Item>): props is SelectableOptions<Item> {
+function inSelectionMode<Item extends BaseItem>(props: SelectionOptions<Item>): props is SelectableOptions<Item> {
     return (
         (props as SelectableOptions<Item>).selectedItems !== undefined &&
         (props as SelectableOptions<Item>).onSelectionChange !== undefined
@@ -41,8 +41,8 @@ export default function useSelection<Item extends BaseItem>(
 
     return {
         isInSelectionMode,
-        totalSelectedQuantity: options.selectedItems.size,
-        unvisibleSelectedQuantity: options.selectedItems.size - visibleSelected,
+        totalSelectedQuantity: isInSelectionMode ? options.selectedItems.size : 0,
+        unvisibleSelectedQuantity: isInSelectionMode ? options.selectedItems.size - visibleSelected : 0,
         isItemSelected: useCallback(
             (item: InternalItem<Item>) => isInSelectionMode && options.selectedItems.has(item.item.id),
             [isInSelectionMode, options.selectedItems],
