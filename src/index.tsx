@@ -61,7 +61,7 @@ type Props<Item extends BaseItem> = BaseProps<Item> & SelectionOptions<Item>
 
 export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) {
     const columns = useColumns(props.columns)
-    const items = useItems(props.items, props.itemTarget, columns)
+    const items = useItems(props.items, props.itemTarget, columns, props.canSelectItem)
 
     const {
         columns: filteredColumns,
@@ -123,12 +123,15 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
                     <DynamicTable.BodyContainer>
                         {paginatedItems.map((item) => (
                             <DynamicTable.Line key={item.key}>
-                                {isInSelectionMode && (
-                                    <DynamicTable.SelectionCell
-                                        selected={isItemSelected(item)}
-                                        onToggle={onItemSelectionToggle(item)}
-                                    />
-                                )}
+                                {isInSelectionMode &&
+                                    (item.isSelectable ? (
+                                        <DynamicTable.SelectionCell
+                                            selected={isItemSelected(item)}
+                                            onToggle={onItemSelectionToggle(item)}
+                                        />
+                                    ) : (
+                                        <DynamicTable.Cell />
+                                    ))}
                                 {item.target !== null
                                     ? item.values.map((value) => (
                                           <DynamicTable.ClickableCell key={value.column} target={item.target as string}>

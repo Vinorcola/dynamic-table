@@ -35,6 +35,7 @@ export type InternalValue = LoadingInternalValue | LoadedInternalValue
 export interface InternalItem<Item extends BaseItem> {
     readonly key: Key
     readonly item: Item
+    readonly isSelectable: boolean
     readonly target: string | null
     readonly values: InternalValue[]
 }
@@ -47,6 +48,7 @@ export default function useItems<Item extends BaseItem>(
     items: Item[],
     itemTarget: ((item: Item) => string) | undefined,
     columns: InternalColumns<Item>,
+    canSelectItem?: (item: Item) => boolean,
 ): InternalItems<Item> {
     return useMemo(
         () =>
@@ -54,11 +56,12 @@ export default function useItems<Item extends BaseItem>(
                 (item): InternalItem<Item> => ({
                     key: item.id,
                     item,
+                    isSelectable: canSelectItem === undefined ? true : canSelectItem(item),
                     target: itemTarget === undefined ? null : itemTarget(item),
                     values: columns.map((column) => resolveInternalValue(item, column)),
                 }),
             ),
-        [items, itemTarget, columns],
+        [items, itemTarget, columns, canSelectItem],
     )
 }
 

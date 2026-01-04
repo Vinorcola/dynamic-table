@@ -7,11 +7,13 @@ type ItemSelection<Item extends BaseItem> = Set<Item["id"]>
 interface SelectableOptions<Item extends BaseItem> {
     selectedItems: ItemSelection<Item>
     onSelectionChange: (selected: ItemSelection<Item>) => void
+    canSelectItem?: (item: Item) => boolean
 }
 
 interface NonSelectableOptions {
     selectedItems?: never
     onSelectionChange?: never
+    canSelectItem?: never
 }
 
 export type SelectionOptions<Item extends BaseItem> = SelectableOptions<Item> | NonSelectableOptions
@@ -54,7 +56,7 @@ export default function useSelection<Item extends BaseItem>(
         ),
         onItemSelectionToggle: useCallback(
             (item: InternalItem<Item>) => () => {
-                if (!isInSelectionMode) {
+                if (!isInSelectionMode || !item.isSelectable) {
                     return
                 }
                 const selection = new Set(selectedItems)
