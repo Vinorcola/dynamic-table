@@ -23,26 +23,31 @@ function inSelectionMode<Item extends BaseItem>(props: SelectionOptions<Item>): 
     )
 }
 
+const EMPTY_SELECTION = new Set()
+const DEFAULT_SELECTION_CHANGE_HANDLER = () => {}
+
 export default function useSelection<Item extends BaseItem>(
     options: SelectionOptions<Item>,
     visibleItems: InternalItems<Item>,
 ) {
     const isInSelectionMode = inSelectionMode(options)
-    const visibleSelected = useMemo(
+    const selectedItems = isInSelectionMode ? options.selectedItems : (EMPTY_SELECTION as ItemSelection<Item>)
+    const onSelectionChange = options.onSelectionChange ?? DEFAULT_SELECTION_CHANGE_HANDLER
+    const unvisibleSelectedQuantity = useMemo(
         () =>
-            isInSelectionMode
+            selectedItems.size > 0
                 ? visibleItems.reduce(
-                      (quantity, item) => quantity - (options.selectedItems.has(item.item.id) ? 1 : 0),
-                      0,
+                      (quantity, item) => quantity - (selectedItems.has(item.item.id) ? 1 : 0),
+                      selectedItems.size,
                   )
                 : 0,
-        [isInSelectionMode, visibleItems, options.selectedItems],
+        [visibleItems, selectedItems],
     )
 
     return {
         isInSelectionMode,
-        totalSelectedQuantity: isInSelectionMode ? options.selectedItems.size : 0,
-        unvisibleSelectedQuantity: isInSelectionMode ? options.selectedItems.size - visibleSelected : 0,
+        totalSelectedQuantity: selectedItems.size,
+        unvisibleSelectedQuantity,
         isItemSelected: useCallback(
             (item: InternalItem<Item>) => isInSelectionMode && options.selectedItems.has(item.item.id),
             [isInSelectionMode, options.selectedItems],
@@ -52,16 +57,16 @@ export default function useSelection<Item extends BaseItem>(
                 if (!isInSelectionMode) {
                     return
                 }
-                const selection = new Set(options.selectedItems)
+                const selection = new Set(selectedItems)
                 if (selection.has(item.item.id)) {
                     selection.delete(item.item.id)
                 } else {
                     selection.add(item.item.id)
                 }
 
-                options.onSelectionChange(selection)
+                onSelectionChange(selection)
             },
-            [isInSelectionMode, options],
+            [isInSelectionMode, selectedItems, onSelectionChange],
         ),
     }
 }
