@@ -189,6 +189,22 @@ export function HeaderLine(props: Props) {
     return <tr className="bg-table-header">{props.children}</tr>
 }
 
+export interface SelectionHeaderProps extends Props {
+    totalSelected: number
+    unvisibleSelected: number
+}
+
+export function SelectionHeader(props: SelectionHeaderProps) {
+    return (
+        <th className="relative">
+            {props.totalSelected}
+            <span className="text-sm text-stone-500 italic">
+                ({props.unvisibleSelected} caché{props.unvisibleSelected > 1 ? "s" : ""})
+            </span>
+        </th>
+    )
+}
+
 export interface HeaderProps<Item extends BaseItem, Value extends Primitive> extends Props {
     column: InternalColumn<Item, Value>
 }
@@ -377,6 +393,25 @@ export function Line(props: Props) {
         <tr className="even:[&>*]:bg-table-line-even odd:[&>*]:bg-table-line-odd hover:bg-table-line-hover">
             {props.children}
         </tr>
+    )
+}
+
+interface SelectionCellProps extends Props {
+    selected: boolean
+    onToggle: () => void
+}
+
+export function SelectionCell(props: SelectionCellProps) {
+    return (
+        <td
+            onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                props.onToggle()
+            }}
+        >
+            {props.selected ? <CheckedIcon /> : <UncheckedIcon />}
+        </td>
     )
 }
 

@@ -21,7 +21,9 @@ import {
     PageSelector,
     Popup,
     SearchFilterPopup,
+    SelectionCell,
     SelectionFilterPopup,
+    SelectionHeader,
     Table,
     TableContainer,
 } from "./DefaultTheme.js"
@@ -32,6 +34,7 @@ import useItems from "./useItems.js"
 import type { ColumnsMaskState } from "./useMaskableColumns.js"
 import useMaskableColumns from "./useMaskableColumns.js"
 import usePagination, { type PaginationState } from "./usePagination.js"
+import useSelection, { type SelectionOptions } from "./useSelection.js"
 import useSortState, { type SortState } from "./useSortState.js"
 
 export type Primitive = boolean | Date | number | string
@@ -44,7 +47,7 @@ export type { SortDirection, SortState } from "./useSortState.js"
 export type { ColumnsMaskState } from "./useMaskableColumns.js"
 export type { PaginationState } from "./usePagination.js"
 
-interface Props<Item extends BaseItem> {
+interface BaseProps<Item extends BaseItem> {
     items: Item[]
     columns: ColumnDefinition<Item, Primitive>[]
     itemTarget?: (item: Item) => string
@@ -53,6 +56,8 @@ interface Props<Item extends BaseItem> {
     initialColumnsMaskState?: ColumnsMaskState
     initialPaginationState?: PaginationState
 }
+
+type Props<Item extends BaseItem> = BaseProps<Item> & SelectionOptions<Item>
 
 export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) {
     const columns = useColumns(props.columns)
@@ -83,6 +88,14 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
         onCurrentPageChange,
     } = usePagination(displayedItems, props.initialPaginationState)
 
+    const {
+        isInSelectionMode,
+        totalSelectedQuantity,
+        unvisibleSelectedQuantity,
+        isItemSelected,
+        onItemSelectionToggle,
+    } = useSelection(props, paginatedItems)
+
     return (
         <UniquePopupProvider>
             <DynamicTable.TableContainer>
@@ -94,6 +107,12 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
                 <DynamicTable.Table>
                     <DynamicTable.HeaderContainer>
                         <DynamicTable.HeaderLine>
+                            {isInSelectionMode && (
+                                <DynamicTable.SelectionHeader
+                                    totalSelected={totalSelectedQuantity}
+                                    unvisibleSelected={unvisibleSelectedQuantity}
+                                />
+                            )}
                             {displayedColumns.map((column) => (
                                 <DynamicTable.Header key={column.id} column={column}>
                                     {column.title}
@@ -104,6 +123,12 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
                     <DynamicTable.BodyContainer>
                         {paginatedItems.map((item) => (
                             <DynamicTable.Line key={item.key}>
+                                {isInSelectionMode && (
+                                    <DynamicTable.SelectionCell
+                                        selected={isItemSelected(item)}
+                                        onToggle={onItemSelectionToggle(item)}
+                                    />
+                                )}
                                 {item.target !== null
                                     ? item.values.map((value) => (
                                           <DynamicTable.ClickableCell key={value.column} target={item.target as string}>
@@ -146,6 +171,7 @@ DynamicTable.ColumnsPopup = ColumnsPopup
 DynamicTable.Table = Table
 DynamicTable.HeaderContainer = HeaderContainer
 DynamicTable.HeaderLine = HeaderLine
+DynamicTable.SelectionHeader = SelectionHeader
 DynamicTable.Header = Header
 DynamicTable.HeaderActions = HeaderActions
 DynamicTable.HeaderStatus = HeaderStatus
@@ -153,6 +179,7 @@ DynamicTable.SearchFilterPopup = SearchFilterPopup
 DynamicTable.SelectionFilterPopup = SelectionFilterPopup
 DynamicTable.BodyContainer = BodyContainer
 DynamicTable.Line = Line
+DynamicTable.SelectionCell = SelectionCell
 DynamicTable.Cell = Cell
 DynamicTable.ClickableCell = ClickableCell
 DynamicTable.FooterContainer = FooterContainer
