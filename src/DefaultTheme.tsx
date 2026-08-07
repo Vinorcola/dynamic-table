@@ -426,7 +426,7 @@ export interface ClickableProps extends Props {
 
 export function ClickableCell(props: ClickableProps) {
     return (
-        <td className="!p-0">
+        <td className="p-0!">
             <a href={props.target} className="block size-full px-4 py-2">
                 {props.children}
             </a>
@@ -443,7 +443,7 @@ export interface FooterContainerProps {
 export function FooterContainer(props: FooterContainerProps) {
     return (
         <tfoot>
-            <tr>
+            <tr className="bg-transparent">
                 <td className="relative py-0! px-16 h-9 text-center" colSpan={props.totalColums}>
                     {props.pageSelector}
                     {props.itemsPerPageSelector}
@@ -463,7 +463,6 @@ export function ItemsPerPageSelector(props: ItemsPerPageSelectorProps) {
     return (
         <select
             className="absolute top-0 right-0 h-full w-14 bg-white outline-none"
-            name="items-per-page"
             value={props.itemsPerPage}
             onChange={(event) => {
                 props.onItemsPerPageChange(Number.parseInt(event.target.value, 10))
