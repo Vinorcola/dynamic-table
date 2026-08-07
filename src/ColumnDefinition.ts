@@ -1,17 +1,26 @@
+import type { ReactNode } from "react"
+
 import type { BaseItem, Dictionary, ItemKey, Primitive } from "./index.js"
 
+export type ValueDecorator<Item extends BaseItem, Value extends Primitive> = (
+    value: Value,
+    defaultDisplay: ReactNode,
+    item: Item,
+) => ReactNode
 export type ValueResolver<Item extends BaseItem, Value extends Primitive> = (item: Item) => Value | null
 
-interface BaseColumneDefinition<Value extends Primitive> {
+interface BaseColumneDefinition<Item extends BaseItem, Value extends Primitive> {
     readonly title: string
     readonly dictionary?: Dictionary<Value> | Promise<Dictionary<Value>>
+    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly decorateNoValue?: () => ReactNode
 }
 
 /**
  * A column that will access an item's attribute.
  */
 interface AccessorColumnDefinition<Item extends BaseItem, Value extends Primitive>
-    extends BaseColumneDefinition<Value> {
+    extends BaseColumneDefinition<Item, Value> {
     readonly id: ItemKey<Item>
 }
 
@@ -19,9 +28,9 @@ interface AccessorColumnDefinition<Item extends BaseItem, Value extends Primitiv
  * A column where the value must be resolved.
  */
 interface ResolvedColumnDefinition<Item extends BaseItem, Value extends Primitive>
-    extends BaseColumneDefinition<Value> {
+    extends BaseColumneDefinition<Item, Value> {
     readonly id: string
-    readonly resolveValue: (item: Item) => Value | null
+    readonly resolveValue: ValueResolver<Item, Value>
 }
 
 export type ColumnDefinition<Item extends BaseItem, Value extends Primitive> =

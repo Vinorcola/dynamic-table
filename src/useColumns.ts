@@ -1,6 +1,8 @@
 import { replaceElement } from "@vinorcola/utils/list"
+import type { ReactNode } from "react"
 import { useEffect, useRef, useState } from "react"
 
+import type { ValueDecorator } from "./ColumnDefinition.js"
 import { isAccessorColumnDefinition } from "./ColumnDefinition.js"
 import type { BaseItem, ColumnDefinition, Dictionary, Primitive, ValueResolver } from "./index.js"
 
@@ -13,6 +15,8 @@ export interface LoadingInternalColumn<Item extends BaseItem, Value extends Prim
     readonly loadingDictionary: true
     readonly dictionary: Promise<Dictionary<Value>>
     readonly resolveValue: ValueResolver<Item, Value>
+    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly decorateNoValue?: () => ReactNode
 }
 /**
  * A column fully loaded and usable.
@@ -23,6 +27,8 @@ export interface LoadedInternalColumn<Item extends BaseItem, Value extends Primi
     readonly loadingDictionary: false
     readonly dictionary?: Dictionary<Value>
     readonly resolveValue: ValueResolver<Item, Value>
+    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly decorateNoValue?: () => ReactNode
 }
 /**
  * A column, either in loading state or in loaded state.
@@ -70,6 +76,8 @@ export default function useColumns<Item extends BaseItem>(
                                 resolveValue: isAccessorColumnDefinition(definition)
                                     ? (item: Item) => item[definition.id]
                                     : definition.resolveValue,
+                                decorateValue: definition.decorateValue,
+                                decorateNoValue: definition.decorateNoValue,
                             }),
                         )
                     }
@@ -93,6 +101,8 @@ function resolveInitialColumnState<Item extends BaseItem>(definitions: ColumnDef
                       resolveValue: isAccessorColumnDefinition(definition)
                           ? (item: Item) => item[definition.id]
                           : definition.resolveValue,
+                      decorateValue: definition.decorateValue,
+                      decorateNoValue: definition.decorateNoValue,
                   }
                 : {
                       id: definition.id,
@@ -102,6 +112,8 @@ function resolveInitialColumnState<Item extends BaseItem>(definitions: ColumnDef
                       resolveValue: isAccessorColumnDefinition(definition)
                           ? (item: Item) => item[definition.id]
                           : definition.resolveValue,
+                      decorateValue: definition.decorateValue,
+                      decorateNoValue: definition.decorateNoValue,
                   },
     )
 }

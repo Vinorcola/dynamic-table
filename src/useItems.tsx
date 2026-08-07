@@ -70,21 +70,33 @@ function resolveInternalValue<Item extends BaseItem>(
     column: InternalColumn<Item, Primitive>,
 ): InternalValue {
     const raw = column.resolveValue(item)
+    if (column.loadingDictionary) {
+        return {
+            column: column.id,
+            loading: true,
+            raw,
+        }
+    }
 
-    return column.loadingDictionary
-        ? {
-              column: column.id,
-              loading: true,
-              raw,
-          }
-        : {
-              column: column.id,
-              loading: false,
-              raw,
-              search: resolveSearchableValue(raw, column.dictionary),
-              sort: resolveSortableValue(raw, column.dictionary),
-              display: resolveDisplayableValue(raw, column.dictionary),
-          }
+    let display = resolveDisplayableValue(raw, column.dictionary)
+    if (raw === null || raw === undefined || raw === "") {
+        if (column.decorateNoValue !== undefined) {
+            display = column.decorateNoValue()
+        }
+    } else {
+        if (column.decorateValue !== undefined) {
+            display = column.decorateValue(raw, display, item)
+        }
+    }
+
+    return {
+        column: column.id,
+        loading: false,
+        raw,
+        search: resolveSearchableValue(raw, column.dictionary),
+        sort: resolveSortableValue(raw, column.dictionary),
+        display,
+    }
 }
 
 function resolveSearchableValue<Value extends Primitive>(
