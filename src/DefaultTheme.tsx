@@ -1,18 +1,16 @@
 import cx from "@vinorcola/utils/classNames"
-import { useEffect, useMemo, type ReactNode } from "react"
+import type { ReactElement, ReactNode } from "react"
+import { useEffect, useMemo } from "react"
 
 import {
     AscSortIcon,
     CheckedIcon,
-    CloseIcon,
-    ColumnsIcon,
     DescSortIcon,
     FilterIcon,
     HideIcon,
     NextIcon,
     PreviousIcon,
     SearchIcon,
-    SortIcon,
     UncheckedIcon,
 } from "./Icon.js"
 import { usePopup } from "./UniquePopupProvider.js"
@@ -31,86 +29,22 @@ export function TableContainer(props: Props) {
     return <div>{props.children}</div>
 }
 
-export interface ControllerProps<Item extends BaseItem> {
-    columns: InternalColumns<Item>
-    clearFilterState: () => void
-    clearSortState: () => void
+export interface ControllerButtonsGroupProps {
+    filterButton: ReactElement
+    sortButton: ReactElement
+    columnButton: ReactElement
+    columnPopup?: ReactElement
 }
 
-export function Controller<Item extends BaseItem>(props: ControllerProps<Item>) {
-    const columnListPopup = usePopup()
-    const hasHiddenColumns = props.columns.some((column) => isMaskable(column) && !column.displayed)
-    const hasFilteredColumns = props.columns.some(
-        (column) =>
-            (isSearchable(column) && column.searchText !== null) ||
-            (isSelectable(column) && column.hiddenValues.length > 0),
-    )
-    const hasHiddenFilteredColumns =
-        hasHiddenColumns &&
-        hasFilteredColumns &&
-        props.columns.some(
-            (column) =>
-                isMaskable(column) &&
-                !column.displayed &&
-                ((isSearchable(column) && column.searchText !== null) ||
-                    (isSelectable(column) && column.hiddenValues.length > 0)),
-        )
-    const hasSortedColumns = props.columns.some((column) => isSortable(column) && column.sorted !== null)
-    const hasHiddenSortedColumns =
-        hasHiddenColumns &&
-        hasSortedColumns &&
-        props.columns.some(
-            (column) => isMaskable(column) && !column.displayed && isSortable(column) && column.sorted !== null,
-        )
-
+export function ControllerContainer(props: ControllerButtonsGroupProps) {
     return (
         <div className="relative">
             <ul className="flex justify-end">
-                <li>
-                    <DynamicTable.Button
-                        className={cx(
-                            hasHiddenFilteredColumns
-                                ? "[--bg-color:var(--color-orange-400)]"
-                                : hasFilteredColumns && "[--bg-color:var(--color-lime-400)]",
-                        )}
-                        disabled={!hasFilteredColumns}
-                        hoverChildren={<CloseIcon />}
-                        onClick={props.clearFilterState}
-                    >
-                        <FilterIcon />
-                    </DynamicTable.Button>
-                </li>
-                <li>
-                    <DynamicTable.Button
-                        className={cx(
-                            hasHiddenSortedColumns
-                                ? "[--bg-color:var(--color-orange-400)]"
-                                : hasSortedColumns && "[--bg-color:var(--color-sky-400)]",
-                        )}
-                        disabled={!hasSortedColumns}
-                        hoverChildren={<CloseIcon />}
-                        onClick={props.clearSortState}
-                    >
-                        <SortIcon />
-                    </DynamicTable.Button>
-                </li>
-                <li>
-                    <DynamicTable.Button
-                        className={cx(
-                            hasHiddenColumns
-                                ? "[--bg-color:var(--color-orange-400)]"
-                                : "[--bg-default-color:transparent]",
-                        )}
-                        onClick={columnListPopup.show}
-                    >
-                        <ColumnsIcon />
-                    </DynamicTable.Button>
-                </li>
+                <li>{props.filterButton}</li>
+                <li>{props.sortButton}</li>
+                <li>{props.columnButton}</li>
             </ul>
-
-            {columnListPopup.display && (
-                <DynamicTable.ColumnsPopup columns={props.columns} onDismiss={columnListPopup.dismiss} />
-            )}
+            {props.columnPopup}
         </div>
     )
 }

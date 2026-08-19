@@ -1,13 +1,14 @@
 import type { Key as ReactKey } from "react"
 
 import type { ColumnDefinition } from "./ColumnDefinition.js"
+import Controller from "./Controller.js"
 import {
     BodyContainer,
     Button,
     Cell,
     ClickableCell,
     ColumnsPopup,
-    Controller,
+    ControllerContainer,
     FooterContainer,
     Header,
     HeaderActions,
@@ -99,11 +100,7 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
     return (
         <UniquePopupProvider>
             <DynamicTable.TableContainer>
-                <DynamicTable.Controller
-                    columns={allColumns}
-                    clearFilterState={clearFilterState}
-                    clearSortState={clearSortState}
-                />
+                <Controller columns={allColumns} clearFilterState={clearFilterState} clearSortState={clearSortState} />
                 <DynamicTable.Table>
                     <DynamicTable.HeaderContainer>
                         <DynamicTable.HeaderLine>
@@ -169,7 +166,7 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
 }
 
 DynamicTable.TableContainer = TableContainer
-DynamicTable.Controller = Controller
+DynamicTable.ControllerContainer = ControllerContainer
 DynamicTable.ColumnsPopup = ColumnsPopup
 DynamicTable.Table = Table
 DynamicTable.HeaderContainer = HeaderContainer
