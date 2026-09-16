@@ -52,15 +52,13 @@ export default function useItems<Item extends BaseItem>(
 ): InternalItems<Item> {
     return useMemo(
         () =>
-            items.map(
-                (item): InternalItem<Item> => ({
-                    key: item.id,
-                    item,
-                    isSelectable: canSelectItem === undefined ? true : canSelectItem(item),
-                    target: itemTarget === undefined ? null : itemTarget(item),
-                    values: columns.map((column) => resolveInternalValue(item, column)),
-                }),
-            ),
+            items.map((item): InternalItem<Item> => ({
+                key: item.id,
+                item,
+                isSelectable: canSelectItem === undefined ? true : canSelectItem(item),
+                target: itemTarget === undefined ? null : itemTarget(item),
+                values: columns.map((column) => resolveInternalValue(item, column)),
+            })),
         [items, itemTarget, columns, canSelectItem],
     )
 }

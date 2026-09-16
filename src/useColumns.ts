@@ -34,8 +34,7 @@ export interface LoadedInternalColumn<Item extends BaseItem, Value extends Primi
  * A column, either in loading state or in loaded state.
  */
 export type InternalColumn<Item extends BaseItem, Value extends Primitive> =
-    | LoadingInternalColumn<Item, Value>
-    | LoadedInternalColumn<Item, Value>
+    LoadingInternalColumn<Item, Value> | LoadedInternalColumn<Item, Value>
 /**
  * A list of columns.
  */
@@ -90,30 +89,29 @@ export default function useColumns<Item extends BaseItem>(
 }
 
 function resolveInitialColumnState<Item extends BaseItem>(definitions: ColumnDefinition<Item, Primitive>[]) {
-    return definitions.map(
-        (definition): InternalColumn<Item, Primitive> =>
-            definition.dictionary instanceof Promise
-                ? {
-                      id: definition.id,
-                      title: definition.title,
-                      loadingDictionary: true,
-                      dictionary: definition.dictionary,
-                      resolveValue: isAccessorColumnDefinition(definition)
-                          ? (item: Item) => item[definition.id]
-                          : definition.resolveValue,
-                      decorateValue: definition.decorateValue,
-                      decorateNoValue: definition.decorateNoValue,
-                  }
-                : {
-                      id: definition.id,
-                      title: definition.title,
-                      loadingDictionary: false,
-                      dictionary: definition.dictionary,
-                      resolveValue: isAccessorColumnDefinition(definition)
-                          ? (item: Item) => item[definition.id]
-                          : definition.resolveValue,
-                      decorateValue: definition.decorateValue,
-                      decorateNoValue: definition.decorateNoValue,
-                  },
+    return definitions.map((definition): InternalColumn<Item, Primitive> =>
+        definition.dictionary instanceof Promise
+            ? {
+                  id: definition.id,
+                  title: definition.title,
+                  loadingDictionary: true,
+                  dictionary: definition.dictionary,
+                  resolveValue: isAccessorColumnDefinition(definition)
+                      ? (item: Item) => item[definition.id]
+                      : definition.resolveValue,
+                  decorateValue: definition.decorateValue,
+                  decorateNoValue: definition.decorateNoValue,
+              }
+            : {
+                  id: definition.id,
+                  title: definition.title,
+                  loadingDictionary: false,
+                  dictionary: definition.dictionary,
+                  resolveValue: isAccessorColumnDefinition(definition)
+                      ? (item: Item) => item[definition.id]
+                      : definition.resolveValue,
+                  decorateValue: definition.decorateValue,
+                  decorateNoValue: definition.decorateNoValue,
+              },
     )
 }

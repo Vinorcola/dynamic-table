@@ -52,8 +52,7 @@ export type InternalSelectableColumn<Item extends BaseItem, Value extends Primit
  * Mark a column as filterable, either by text search or value selection.
  */
 export type InternalFilterableColumn<Item extends BaseItem, Value extends Primitive> =
-    | InternalSearchableColumn<Item, Value>
-    | InternalSelectableColumn<Item, Value>
+    InternalSearchableColumn<Item, Value> | InternalSelectableColumn<Item, Value>
 
 export function isFilterable<Item extends BaseItem, Value extends Primitive>(
     column: InternalColumn<Item, Value>,
@@ -98,14 +97,13 @@ export default function useFilterState<Item extends BaseItem>(
                             ...column,
                             searchText: (filterState[column.id] as SearchState | undefined)?.searchText ?? null,
                             onSearchTextChange: (searchText) => {
-                                setFilterState(
-                                    (filterState): FilterState =>
-                                        searchText === null || extractSearchableText(searchText) === ""
-                                            ? drop(filterState, column.id)
-                                            : {
-                                                  ...filterState,
-                                                  [column.id]: { searchText },
-                                              },
+                                setFilterState((filterState): FilterState =>
+                                    searchText === null || extractSearchableText(searchText) === ""
+                                        ? drop(filterState, column.id)
+                                        : {
+                                              ...filterState,
+                                              [column.id]: { searchText },
+                                          },
                                 )
                             },
                         }
@@ -115,11 +113,10 @@ export default function useFilterState<Item extends BaseItem>(
                             hiddenValues:
                                 (filterState[column.id] as SelectionState<Primitive> | undefined)?.hiddenValues ?? [],
                             onSelectionChange: (hiddenValues) => {
-                                setFilterState(
-                                    (filterState): FilterState =>
-                                        hiddenValues.length === 0
-                                            ? drop(filterState, column.id)
-                                            : { ...filterState, [column.id]: { hiddenValues } },
+                                setFilterState((filterState): FilterState =>
+                                    hiddenValues.length === 0
+                                        ? drop(filterState, column.id)
+                                        : { ...filterState, [column.id]: { hiddenValues } },
                                 )
                             },
                         }

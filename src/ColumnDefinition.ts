@@ -19,23 +19,26 @@ interface BaseColumneDefinition<Item extends BaseItem, Value extends Primitive> 
 /**
  * A column that will access an item's attribute.
  */
-interface AccessorColumnDefinition<Item extends BaseItem, Value extends Primitive>
-    extends BaseColumneDefinition<Item, Value> {
+interface AccessorColumnDefinition<Item extends BaseItem, Value extends Primitive> extends BaseColumneDefinition<
+    Item,
+    Value
+> {
     readonly id: ItemKey<Item>
 }
 
 /**
  * A column where the value must be resolved.
  */
-interface ResolvedColumnDefinition<Item extends BaseItem, Value extends Primitive>
-    extends BaseColumneDefinition<Item, Value> {
+interface ResolvedColumnDefinition<Item extends BaseItem, Value extends Primitive> extends BaseColumneDefinition<
+    Item,
+    Value
+> {
     readonly id: string
     readonly resolveValue: ValueResolver<Item, Value>
 }
 
 export type ColumnDefinition<Item extends BaseItem, Value extends Primitive> =
-    | AccessorColumnDefinition<Item, Value>
-    | ResolvedColumnDefinition<Item, Value>
+    AccessorColumnDefinition<Item, Value> | ResolvedColumnDefinition<Item, Value>
 
 export function isAccessorColumnDefinition<Item extends BaseItem, Value extends Primitive>(
     definition: ColumnDefinition<Item, Value>,
