@@ -2,17 +2,17 @@ import type { ReactNode } from "react"
 
 import type { BaseItem, Dictionary, ItemKey, Primitive } from "./index.js"
 
-export type ValueDecorator<Item extends BaseItem, Value extends Primitive> = (
+export type ValueDecorator<Item extends BaseItem, Value extends Primitive | Primitive[]> = (
     value: Value,
     defaultDisplay: ReactNode,
     item: Item,
 ) => ReactNode
-export type ValueResolver<Item extends BaseItem, Value extends Primitive> = (item: Item) => Value | null
+export type ValueResolver<Item extends BaseItem, Value extends Primitive | Primitive[]> = (item: Item) => Value | null
 
 interface BaseColumneDefinition<Item extends BaseItem, Value extends Primitive> {
     readonly title: string
     readonly dictionary?: Dictionary<Value> | Promise<Dictionary<Value>>
-    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly decorateValue?: ValueDecorator<Item, Value | Value[]>
     readonly decorateNoValue?: () => ReactNode
 }
 
@@ -34,7 +34,7 @@ interface ResolvedColumnDefinition<Item extends BaseItem, Value extends Primitiv
     Value
 > {
     readonly id: string
-    readonly resolveValue: ValueResolver<Item, Value>
+    readonly resolveValue: ValueResolver<Item, Value | Value[]>
 }
 
 export type ColumnDefinition<Item extends BaseItem, Value extends Primitive> =

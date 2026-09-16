@@ -14,8 +14,8 @@ export interface LoadingInternalColumn<Item extends BaseItem, Value extends Prim
     readonly title: string
     readonly loadingDictionary: true
     readonly dictionary: Promise<Dictionary<Value>>
-    readonly resolveValue: ValueResolver<Item, Value>
-    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly resolveValue: ValueResolver<Item, Value | Value[]>
+    readonly decorateValue?: ValueDecorator<Item, Value | Value[]>
     readonly decorateNoValue?: () => ReactNode
 }
 /**
@@ -26,8 +26,8 @@ export interface LoadedInternalColumn<Item extends BaseItem, Value extends Primi
     readonly title: string
     readonly loadingDictionary: false
     readonly dictionary?: Dictionary<Value>
-    readonly resolveValue: ValueResolver<Item, Value>
-    readonly decorateValue?: ValueDecorator<Item, Value>
+    readonly resolveValue: ValueResolver<Item, Value | Value[]>
+    readonly decorateValue?: ValueDecorator<Item, Value | Value[]>
     readonly decorateNoValue?: () => ReactNode
 }
 /**

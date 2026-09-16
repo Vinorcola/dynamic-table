@@ -1,7 +1,8 @@
 import { displayInteger } from "@vinorcola/utils/number"
 import { extractSearchableText } from "@vinorcola/utils/text"
-import { useMemo, type Key, type ReactNode } from "react"
+import { Fragment, useMemo, type Key, type ReactNode } from "react"
 
+import ValueList from "./ValueList.js"
 import type { BaseItem, Dictionary, Primitive } from "./index.js"
 import type { InternalColumn, InternalColumns } from "./useColumns.js"
 import type { SortableValue } from "./useSortState.js"
@@ -9,18 +10,18 @@ import type { SortableValue } from "./useSortState.js"
 /**
  * A value that is loading (waiting for an async column dictionary to be available).
  */
-export interface LoadingInternalValue {
+export interface LoadingInternalValue<Value extends Primitive | Primitive[] = Primitive | Primitive[]> {
     readonly column: string
     readonly loading: true
-    readonly raw: Primitive | null
+    readonly raw: Value | null
 }
 /**
  * A loaded value, ready for filter, sort and display.
  */
-export interface LoadedInternalValue {
+export interface LoadedInternalValue<Value extends Primitive | Primitive[] = Primitive | Primitive[]> {
     readonly column: string
     readonly loading: false
-    readonly raw: Primitive | null
+    readonly raw: Value | null
     readonly search: string | null
     readonly sort: SortableValue
     readonly display: ReactNode
@@ -28,7 +29,8 @@ export interface LoadedInternalValue {
 /**
  * A value, either in loading state ou in loaded state.
  */
-export type InternalValue = LoadingInternalValue | LoadedInternalValue
+export type InternalValue<Value extends Primitive | Primitive[] = Primitive | Primitive[]> =
+    LoadingInternalValue<Value> | LoadedInternalValue<Value>
 /**
  * An internal item.
  */
@@ -67,37 +69,50 @@ function resolveInternalValue<Item extends BaseItem>(
     item: Item,
     column: InternalColumn<Item, Primitive>,
 ): InternalValue {
-    const raw = column.resolveValue(item)
+    const value = column.resolveValue(item)
     if (column.loadingDictionary) {
         return {
             column: column.id,
             loading: true,
-            raw,
+            raw: value,
         }
     }
 
-    let display = resolveDisplayableValue(raw, column.dictionary)
-    if (raw === null || raw === undefined || raw === "") {
+    let display: ReactNode
+    if (value === null || value === undefined || value === "") {
         if (column.decorateNoValue !== undefined) {
             display = column.decorateNoValue()
+        } else {
+            display = null
         }
+    } else if (column.decorateValue !== undefined) {
+        display = column.decorateValue(value, display, item)
     } else {
-        if (column.decorateValue !== undefined) {
-            display = column.decorateValue(raw, display, item)
-        }
+        display = resolveDisplayableValue(value, column.dictionary)
     }
 
     return {
         column: column.id,
         loading: false,
-        raw,
-        search: resolveSearchableValue(raw, column.dictionary),
-        sort: resolveSortableValue(raw, column.dictionary),
+        raw: value,
+        search: resolveSearchableValue(value, column.dictionary),
+        sort: resolveSortableValue(value, column.dictionary),
         display,
     }
 }
 
+const ARBITRARY_SEARCH_SEPARATOR = "#|!$#" // To avoid searching text across several values, we separate each value by
+//                                         // this arbitrary (unlikely searched by users) text.
 function resolveSearchableValue<Value extends Primitive>(
+    value: Value | Value[] | null,
+    dictionary: Dictionary<Value> | undefined,
+): string | null {
+    return Array.isArray(value)
+        ? value.map((value) => resolveSearchableSingleValue(value, dictionary)).join(ARBITRARY_SEARCH_SEPARATOR)
+        : resolveSearchableSingleValue(value, dictionary)
+}
+
+function resolveSearchableSingleValue<Value extends Primitive>(
     value: Value | null,
     dictionary: Dictionary<Value> | undefined,
 ): string | null {
@@ -122,6 +137,17 @@ function resolveSearchableValue<Value extends Primitive>(
 }
 
 function resolveSortableValue<Value extends Primitive>(
+    value: Value | Value[] | null,
+    dictionary: Dictionary<Value> | undefined,
+): number | string | null {
+    return Array.isArray(value)
+        ? value.length === 0
+            ? null
+            : resolveSortableSingleValue(value[0], dictionary) // Sort using first value (until we find a better way!)
+        : resolveSortableSingleValue(value, dictionary)
+}
+
+function resolveSortableSingleValue<Value extends Primitive>(
     value: Value | null,
     dictionary: Dictionary<Value> | undefined,
 ): number | string | null {
@@ -145,8 +171,20 @@ function resolveSortableValue<Value extends Primitive>(
 }
 
 function resolveDisplayableValue<Value extends Primitive>(
-    value: Value | null,
+    value: Value | Value[],
     dictionary: Dictionary<Value> | undefined,
+): ReactNode {
+    return Array.isArray(value) ? (
+        <ValueList items={value.map((value, index) => resolveDisplayableSingleValue(value, dictionary, index))} />
+    ) : (
+        resolveDisplayableSingleValue(value, dictionary)
+    )
+}
+
+function resolveDisplayableSingleValue<Value extends Primitive>(
+    value: Value,
+    dictionary: Dictionary<Value> | undefined,
+    nodeKey?: Key,
 ): ReactNode {
     if (value === null) {
         return null
@@ -158,10 +196,10 @@ function resolveDisplayableValue<Value extends Primitive>(
         }
 
         return dictionaryEntry.prepend !== undefined ? (
-            <>
+            <Fragment key={nodeKey}>
                 {dictionaryEntry.prepend}
                 {dictionaryEntry.title}
-            </>
+            </Fragment>
         ) : (
             dictionaryEntry.title
         )

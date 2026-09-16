@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react"
 
 import type { BaseItem, Primitive } from "./index.js"
 import type { InternalColumn, InternalColumns } from "./useColumns.js"
-import type { InternalItems, LoadedInternalValue } from "./useItems.js"
+import type { InternalItems, LoadedInternalValue, InternalValue } from "./useItems.js"
 
 /**
  * A filter type.
@@ -126,30 +126,30 @@ export default function useFilterState<Item extends BaseItem>(
         ),
         items: useMemo(
             () =>
-                items.filter((items) =>
-                    items.values.every((value) => {
-                        if (value.loading) {
-                            // Keep loading values.
-                            return true
-                        }
-
-                        const columnFilterState: ColumnFilterState<Primitive> | null = filterState[value.column] ?? null
-                        if (columnFilterState === null) {
-                            // There is no filter on this column.
-                            return true
-                        }
-
-                        return isSearchedState(columnFilterState)
-                            ? matchSearch(value, columnFilterState)
-                            : matchSelection(value, columnFilterState)
-                    }),
-                ),
+                items.filter((items) => items.values.every((value) => isValueMatchingColumnFilter(filterState, value))),
             [items, filterState],
         ),
         clearFilterState: useCallback(() => {
             setFilterState({})
         }, []),
     }
+}
+
+function isValueMatchingColumnFilter(filterState: FilterState, value: InternalValue): boolean {
+    if (value.loading) {
+        // Keep loading values.
+        return true
+    }
+
+    const columnFilterState: ColumnFilterState<Primitive> | null = filterState[value.column] ?? null
+    if (columnFilterState === null) {
+        // There is no filter on this column.
+        return true
+    }
+
+    return isSearchedState(columnFilterState)
+        ? matchSearch(value, columnFilterState)
+        : matchSelection(value, columnFilterState)
 }
 
 function isSearchedState<Value extends Primitive>(state: ColumnFilterState<Value>): state is SearchState {
@@ -169,6 +169,9 @@ function matchSelection(value: LoadedInternalValue, filterState: SelectionState<
     if (value.raw === null) {
         // Filter out empty values.
         return false
+    }
+    if (Array.isArray(value.raw)) {
+        return value.raw.some((rawValue) => !filterState.hiddenValues.includes(rawValue))
     }
 
     return !filterState.hiddenValues.includes(value.raw)
