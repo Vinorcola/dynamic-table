@@ -35,23 +35,27 @@ type PopupState =
  */
 // eslint-disable-next-line react-refresh/only-export-components
 export function usePopup(): PopupState {
-    const dismiss = useContext(PopupContext)
+    const dismissRef = useContext(PopupContext)
     const [display, setDisplay] = useState(false)
 
     return {
         display,
         show: useCallback(() => {
-            if (dismiss.current !== null) {
-                dismiss.current()
+            if (dismissRef.current !== null) {
+                dismissRef.current()
             }
 
-            dismiss.current = () => {
+            dismissRef.current = () => {
                 setDisplay(false)
-                dismiss.current = null
+                dismissRef.current = null
             }
             setDisplay(true)
-        }, [dismiss]),
-        dismiss: dismiss.current,
+        }, [dismissRef]),
+        dismiss: useCallback(() => {
+            if (dismissRef.current !== null) {
+                dismissRef.current()
+            }
+        }, [dismissRef]),
     } as PopupState
 }
 

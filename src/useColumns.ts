@@ -58,6 +58,7 @@ export default function useColumns<Item extends BaseItem>(
     useEffect(() => {
         definitionVersion.current++
         const currentVersion = definitionVersion.current
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setColumns(resolveInitialColumnState(definitions))
 
         definitions.forEach((definition, index) => {
