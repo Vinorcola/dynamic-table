@@ -1,6 +1,6 @@
 import { displayInteger } from "@vinorcola/utils/number"
 import { extractSearchableText } from "@vinorcola/utils/text"
-import { Fragment, useMemo, type Key, type ReactNode } from "react"
+import { useMemo, type Key, type ReactNode } from "react"
 
 import ValueList from "./ValueList.js"
 import type { BaseItem, Dictionary, Primitive } from "./index.js"
@@ -196,10 +196,10 @@ function resolveDisplayableSingleValue<Value extends Primitive>(
         }
 
         return dictionaryEntry.prepend !== undefined ? (
-            <Fragment key={nodeKey}>
+            <dictionary.valueWrapper key={nodeKey}>
                 {dictionaryEntry.prepend}
                 {dictionaryEntry.title}
-            </Fragment>
+            </dictionary.valueWrapper>
         ) : (
             dictionaryEntry.title
         )
