@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 
+import type { SpecificStateWatcher } from "./StateWatcher/index.js"
 import type { BaseItem, Primitive } from "./index.js"
 import type { InternalColumn } from "./useColumns.js"
 import type { InternalItems } from "./useItems.js"
+import useWatchedState from "./useWatchedState.js"
 
 /**
  * A complete columns mask state.
@@ -35,9 +37,10 @@ export function isMaskable<Item extends BaseItem, Value extends Primitive>(
 export default function useMaskableColumns<Item extends BaseItem>(
     columns: InternalColumn<Item, Primitive>[],
     items: InternalItems<Item>,
-    initialHiddenColumns: ColumnsMaskState = [],
+    initialState: ColumnsMaskState | undefined,
+    watcher: SpecificStateWatcher<ColumnsMaskState> | undefined,
 ) {
-    const [hidden, setHidden] = useState<ColumnsMaskState>(initialHiddenColumns)
+    const [hidden, setHidden] = useWatchedState<ColumnsMaskState>([], initialState, watcher)
 
     const allColumns = useMemo(
         () =>

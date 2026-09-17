@@ -1,10 +1,12 @@
 import { drop } from "@vinorcola/utils/object"
 import { extractSearchableText } from "@vinorcola/utils/text"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
+import type { SpecificStateWatcher } from "./StateWatcher/index.js"
 import type { BaseItem, Primitive } from "./index.js"
 import type { InternalColumn, InternalColumns } from "./useColumns.js"
 import type { InternalItems, LoadedInternalValue, InternalValue } from "./useItems.js"
+import useWatchedState from "./useWatchedState.js"
 
 /**
  * A filter type.
@@ -84,9 +86,10 @@ export function isSelectable<Item extends BaseItem, Value extends Primitive>(
 export default function useFilterState<Item extends BaseItem>(
     columns: InternalColumns<Item>,
     items: InternalItems<Item>,
-    initialFilterState: FilterState = {},
+    initialState: FilterState | undefined,
+    watcher: SpecificStateWatcher<FilterState> | undefined,
 ) {
-    const [filterState, setFilterState] = useState<FilterState>(initialFilterState)
+    const [filterState, setFilterState] = useWatchedState<FilterState>({}, initialState, watcher)
 
     return {
         columns: useMemo(

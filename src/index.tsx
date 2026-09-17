@@ -1,4 +1,4 @@
-import type { Key as ReactKey } from "react"
+import { useMemo, type Key as ReactKey } from "react"
 
 import type { ColumnDefinition } from "./ColumnDefinition.js"
 import Controller from "./Controller.js"
@@ -28,6 +28,9 @@ import {
     Table,
     TableContainer,
 } from "./DefaultTheme.js"
+import generateLocalStorageWatcher from "./StateWatcher/LocalStorageWatcher.js"
+import NoopWatcher from "./StateWatcher/NoopWatcher.js"
+import type { StateWatcherInterface } from "./StateWatcher/index.js"
 import UniquePopupProvider from "./UniquePopupProvider.js"
 import useColumns from "./useColumns.js"
 import useFilterState, { type FilterState } from "./useFilterState.js"
@@ -43,12 +46,15 @@ export type BaseItem = Record<string, any> & { readonly id: ReactKey }
 export type ItemKey<Item extends BaseItem> = Extract<keyof Item, string>
 export type { ColumnDefinition, ValueResolver } from "./ColumnDefinition.js"
 export { default as Dictionary, DictionaryEntry } from "./Dictionary.js"
+export type { StateWatcherInterface } from "./StateWatcher/index.js"
+export { default as LocalStorageWatcher } from "./StateWatcher/LocalStorageWatcher.js"
 export type { FilterState } from "./useFilterState.js"
 export type { SortDirection, SortState } from "./useSortState.js"
 export type { ColumnsMaskState } from "./useMaskableColumns.js"
 export type { PaginationState } from "./usePagination.js"
 
 interface BaseProps<Item extends BaseItem> {
+    namespace?: string // If provided, will be used by the LocalStorage watcher (unless you provider a specific watcher).
     items: Item[]
     columns: ColumnDefinition<Item, Primitive>[]
     itemTarget?: (item: Item) => string
@@ -56,6 +62,7 @@ interface BaseProps<Item extends BaseItem> {
     initialSortState?: SortState
     initialColumnsMaskState?: ColumnsMaskState
     initialPaginationState?: PaginationState
+    watcher?: StateWatcherInterface
 }
 
 type Props<Item extends BaseItem> = BaseProps<Item> & SelectionOptions<Item>
@@ -64,21 +71,28 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
     const columns = useColumns(props.columns)
     const items = useItems(props.items, props.itemTarget, columns, props.canSelectItem)
 
+    const watcher = useMemo(
+        () =>
+            props.watcher ??
+            (props.namespace === undefined ? NoopWatcher : generateLocalStorageWatcher(props.namespace)),
+        [props.namespace, props.watcher],
+    )
+
     const {
         columns: filteredColumns,
         items: filteredItems,
         clearFilterState,
-    } = useFilterState(columns, items, props.initialFilterState)
+    } = useFilterState(columns, items, props.initialFilterState, watcher.filterState)
     const {
         columns: sortedColumns,
         items: sortedItems,
         clearSortState,
-    } = useSortState(filteredColumns, filteredItems, props.initialSortState)
+    } = useSortState(filteredColumns, filteredItems, props.initialSortState, watcher.sortState)
     const {
         allColumns,
         columns: displayedColumns,
         items: displayedItems,
-    } = useMaskableColumns(sortedColumns, sortedItems, props.initialColumnsMaskState)
+    } = useMaskableColumns(sortedColumns, sortedItems, props.initialColumnsMaskState, watcher.columnsMaskState)
 
     const {
         items: paginatedItems,
@@ -87,7 +101,7 @@ export default function DynamicTable<Item extends BaseItem>(props: Props<Item>) 
         totalPages,
         currentPage,
         onCurrentPageChange,
-    } = usePagination(displayedItems, props.initialPaginationState)
+    } = usePagination(displayedItems, props.initialPaginationState, watcher.paginationState)
 
     const {
         isInSelectionMode,

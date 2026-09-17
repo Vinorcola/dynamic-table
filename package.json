@@ -44,6 +44,7 @@
   "devDependencies": {
     "@types/react": "^19.2.2",
     "@vinorcola/lint": "^1.0.5",
+    "eslint-plugin-react-hooks-configurable": "^7.1.1",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {

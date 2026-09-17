@@ -1,7 +1,9 @@
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
+import type { SpecificStateWatcher } from "./StateWatcher/index.js"
 import type { BaseItem } from "./index.js"
 import type { InternalItems } from "./useItems.js"
+import useWatchedState from "./useWatchedState.js"
 
 /**
  * A complete pagination state.
@@ -18,9 +20,10 @@ export interface PaginationState {
  */
 export default function usePagination<Item extends BaseItem>(
     items: InternalItems<Item>,
-    initialPaginationState: PaginationState = { currentPage: 1, itemsPerPage: 12 },
+    initialState: PaginationState | undefined,
+    watcher: SpecificStateWatcher<PaginationState> | undefined,
 ) {
-    const [pagination, setPagination] = useState(initialPaginationState)
+    const [pagination, setPagination] = useWatchedState({ currentPage: 1, itemsPerPage: 12 }, initialState, watcher)
 
     const totalPages = useMemo(() => Math.ceil(items.length / pagination.itemsPerPage), [items, pagination])
     const currentPage = useMemo(

@@ -1,9 +1,11 @@
 import { dropElement, replaceElement } from "@vinorcola/utils/list"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo } from "react"
 
+import type { SpecificStateWatcher } from "./StateWatcher/index.js"
 import type { BaseItem, Primitive } from "./index.js"
 import type { InternalColumn, InternalColumns } from "./useColumns.js"
 import type { InternalItems, InternalItem } from "./useItems.js"
+import useWatchedState from "./useWatchedState.js"
 
 /**
  * A sort direction.
@@ -45,9 +47,10 @@ export function isSortable<Item extends BaseItem, Value extends Primitive>(
 export default function useSortState<Item extends BaseItem>(
     columns: InternalColumns<Item>,
     items: InternalItems<Item>,
-    initialSortState: SortState = [],
+    initialState: SortState | undefined,
+    watcher: SpecificStateWatcher<SortState> | undefined,
 ) {
-    const [sortState, setSortState] = useState<SortState>(initialSortState)
+    const [sortState, setSortState] = useWatchedState<SortState>([], initialState, watcher)
 
     return {
         columns: useMemo(
