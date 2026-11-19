@@ -1,7 +1,7 @@
-import type { FilterState } from "../useFilterState"
-import type { ColumnsMaskState } from "../useMaskableColumns"
-import type { PaginationState } from "../usePagination"
-import type { SortState } from "../useSortState"
+import type { FilterState } from "../useFilterState.js"
+import type { ColumnsMaskState } from "../useMaskableColumns.js"
+import type { PaginationState } from "../usePagination.js"
+import type { SortState } from "../useSortState.js"
 
 export interface StateWatcherInterface {
     filterState?: SpecificStateWatcher<FilterState>

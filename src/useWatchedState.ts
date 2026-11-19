@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from "react"
 import { useCallback, useEffect, useState } from "react"
 
-import type { SpecificStateWatcher } from "./StateWatcher"
+import type { SpecificStateWatcher } from "./StateWatcher/index.js"
 
 export default function useWatchedState<State>(
     defaultState: State,

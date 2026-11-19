@@ -1,4 +1,4 @@
-import type { StateWatcherInterface } from "."
+import type { StateWatcherInterface } from "./index.js"
 
 /**
  * This watcher does nothing.

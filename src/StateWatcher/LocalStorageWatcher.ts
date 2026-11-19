@@ -1,4 +1,4 @@
-import type { SpecificStateWatcher, StateWatcherInterface } from "."
+import type { SpecificStateWatcher, StateWatcherInterface } from "./index.js"
 
 function save<T>(key: string, value: T): void {
     localStorage.setItem(key, JSON.stringify(value))
