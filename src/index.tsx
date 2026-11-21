@@ -44,7 +44,12 @@ import useSortState, { type SortState } from "./useSortState.js"
 export type Primitive = boolean | Date | number | string
 export type BaseItem = Record<string, any> & { readonly id: ReactKey }
 export type ItemKey<Item extends BaseItem> = Extract<keyof Item, string>
-export type { ColumnDefinition, ValueResolver } from "./ColumnDefinition.js"
+export type {
+    AccessorColumnDefinition,
+    ColumnDefinition,
+    ResolvedColumnDefinition,
+    ValueResolver,
+} from "./ColumnDefinition.js"
 export { default as Dictionary, DictionaryEntry } from "./Dictionary.js"
 export type { StateWatcherInterface } from "./StateWatcher/index.js"
 export { default as LocalStorageWatcher } from "./StateWatcher/LocalStorageWatcher.js"
